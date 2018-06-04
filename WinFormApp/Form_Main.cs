@@ -2,7 +2,7 @@
 Copyright © 2013-2018 chibayuki@foxmail.com
 
 拼图板
-Version 7.1.17000.4925.R16.180602-0000
+Version 7.1.17000.4925.R16.180604-0000
 
 This file is part of 拼图板
 
@@ -40,7 +40,7 @@ namespace WinFormApp
         private static readonly Int32 BuildNumber = new Version(Application.ProductVersion).Build; // 版本号。
         private static readonly Int32 BuildRevision = new Version(Application.ProductVersion).Revision; // 修订版本。
         private static readonly string LabString = "R16"; // 分支名。
-        private static readonly string BuildTime = "180602-0000"; // 编译时间。
+        private static readonly string BuildTime = "180604-0000"; // 编译时间。
 
         //
 
@@ -1250,7 +1250,7 @@ namespace WinFormApp
                                     string StrVal = RegexUint.Replace(Fields[i++], string.Empty);
                                     E = Convert.ToInt32(StrVal);
 
-                                    if ((Index.X >= 0 && Index.X < Record_Last.Range.Width && Index.Y >= 0 && Index.Y < Record_Last.Range.Height) && (E >= 1 && E < Record_Last.Range.Width * Record_Last.Range.Height))
+                                    if ((Index.X >= 0 && Index.X < Record_Last.Range.Width && Index.Y >= 0 && Index.Y < Record_Last.Range.Height) && (E > 0 && E < Record_Last.Range.Width * Record_Last.Range.Height))
                                     {
                                         ElementArray_Last[Index.X, Index.Y] = E;
                                         ElementIndexList_Last.Add(Index);
@@ -1515,7 +1515,7 @@ namespace WinFormApp
                 {
                     return Me.RecommendColors.Background.ToColor();
                 }
-                else if (E >= 1)
+                else if (E > 0)
                 {
                     return Me.RecommendColors.Main_DEC.ToColor();
                 }
@@ -1572,10 +1572,10 @@ namespace WinFormApp
 
         private Graphics EAryBmpGrap; // 元素矩阵位图绘图。
 
-        private void ElementArray_DrawInRectangle(Int32 E, Rectangle Rect, bool PresentNow)
+        private void ElementArray_DrawInRectangle(Int32 E, Rectangle Rect, bool HighLight, bool PresentNow)
         {
             //
-            // 在元素矩阵位图的指矩形区域内绘制一个元素。E：元素的值；Rect：矩形区域；PresentNow：是否立即呈现此元素，如果为 true，那么将在位图中绘制此元素，并在不重绘整个位图的情况下在容器中绘制此元素，如果为 false，那么将仅在位图中绘制此元素。
+            // 在元素矩阵位图的指矩形区域内绘制一个元素。E：元素的值；Rect：矩形区域；HighLight：是否以高亮效果呈现此元素；PresentNow：是否立即呈现此元素，如果为 true，那么将在位图中绘制此元素，并在不重绘整个位图的情况下在容器中绘制此元素，如果为 false，那么将仅在位图中绘制此元素。
             //
 
             Rectangle BmpRect = new Rectangle(new Point(Rect.X - (ElementSize - Rect.Width) / 2, Rect.Y - (ElementSize - Rect.Height) / 2), new Size(ElementSize, ElementSize));
@@ -1621,6 +1621,8 @@ namespace WinFormApp
                 Cr_Cen = Com.ColorManipulation.GetGrayscaleColor(Cr_Cen);
             }
 
+            //
+
             if (BlockStyle == BlockStyles.Image)
             {
                 Bitmap SubImg = ElementArray_GetBackgroundImage(E);
@@ -1648,9 +1650,16 @@ namespace WinFormApp
 
             //
 
+            if (HighLight)
+            {
+                BmpGrap.FillPath(new SolidBrush(Color.FromArgb(96, GameUIBackColor_DEC)), RndRect_Cen);
+            }
+
+            //
+
             if (BlockStyle == BlockStyles.Number || (BlockStyle == BlockStyles.Image && ShowNumberOnImage))
             {
-                string StringText = (E >= 1 ? E.ToString() : string.Empty);
+                string StringText = (E > 0 ? E.ToString() : string.Empty);
 
                 if (StringText.Length > 0)
                 {
@@ -1684,6 +1693,31 @@ namespace WinFormApp
                 {
                     Panel_Environment.CreateGraphics().DrawImage(Bmp, new Point(EAryBmpRect.X + BmpRect.X, EAryBmpRect.Y + BmpRect.Y));
                 }
+            }
+        }
+
+        private void ElementArray_DrawInRectangle(Int32 E, Rectangle Rect, bool PresentNow)
+        {
+            //
+            // 在元素矩阵位图的指矩形区域内绘制一个元素。E：元素的值；Rect：矩形区域；PresentNow：是否立即呈现此元素，如果为 true，那么将在位图中绘制此元素，并在不重绘整个位图的情况下在容器中绘制此元素，如果为 false，那么将仅在位图中绘制此元素。
+            //
+
+            ElementArray_DrawInRectangle(E, Rect, false, PresentNow);
+        }
+
+        private void ElementArray_DrawAtPoint(Point A, bool PresentNow)
+        {
+            //
+            // 在元素矩阵位图的指定索引处绘制一个元素。A：索引；PresentNow：是否立即呈现此元素，如果为 true，那么将在位图中绘制此元素，并在不重绘整个位图的情况下在容器中绘制此元素，如果为 false，那么将仅在位图中绘制此元素。
+            //
+
+            if (A.X >= 0 && A.X < CAPACITY && A.Y >= 0 && A.Y < CAPACITY)
+            {
+                Int32 E = ElementArray[A.X, A.Y];
+
+                Rectangle Rect = new Rectangle(new Point(A.X * ElementSize, A.Y * ElementSize), new Size(ElementSize, ElementSize));
+
+                ElementArray_DrawInRectangle(E, Rect, (E > 0 && A == GameUIPointedIndex), PresentNow);
             }
         }
 
@@ -1772,6 +1806,21 @@ namespace WinFormApp
                 //
 
                 RepaintEAryBmp();
+            }
+        }
+
+        private void ElementArray_PresentAt(Point A)
+        {
+            //
+            // 呈现元素矩阵中指定的索引处的一个元素。A：索引。
+            //
+
+            if (Panel_Environment.Visible && (Panel_Environment.Width > 0 && Panel_Environment.Height > 0))
+            {
+                if (A.X >= 0 && A.X < Range.Width && A.Y >= 0 && A.Y < Range.Height)
+                {
+                    ElementArray_DrawAtPoint(A, true);
+                }
             }
         }
 
@@ -3078,6 +3127,8 @@ namespace WinFormApp
 
         #region 游戏 UI 交互
 
+        private Point GameUIPointedIndex = new Point(-1, -1); // 鼠标指向的索引。
+
         private void Panel_Environment_MouseMove(object sender, MouseEventArgs e)
         {
             //
@@ -3085,6 +3136,23 @@ namespace WinFormApp
             //
 
             Panel_Environment.Focus();
+
+            //
+
+            if (Timer_Timer.Enabled)
+            {
+                Point A = ElementArray_GetIndex(Com.Geometry.GetCursorPositionOfControl(Panel_Environment));
+
+                if (GameUIPointedIndex != A)
+                {
+                    Point LastPointedIndex = GameUIPointedIndex;
+
+                    GameUIPointedIndex = A;
+
+                    ElementArray_PresentAt(LastPointedIndex);
+                    ElementArray_PresentAt(GameUIPointedIndex);
+                }
+            }
         }
 
         private void Panel_Environment_MouseDown(object sender, MouseEventArgs e)
