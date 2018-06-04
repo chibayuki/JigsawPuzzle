@@ -2,7 +2,7 @@
 Copyright © 2013-2018 chibayuki@foxmail.com
 
 拼图板
-Version 7.1.17000.4925.R16.180604-0000
+Version 7.1.17000.4925.R16.180605-0000
 
 This file is part of 拼图板
 
@@ -40,7 +40,7 @@ namespace WinFormApp
         private static readonly Int32 BuildNumber = new Version(Application.ProductVersion).Build; // 版本号。
         private static readonly Int32 BuildRevision = new Version(Application.ProductVersion).Revision; // 修订版本。
         private static readonly string LabString = "R16"; // 分支名。
-        private static readonly string BuildTime = "180604-0000"; // 编译时间。
+        private static readonly string BuildTime = "180605-0000"; // 编译时间。
 
         //
 
@@ -3146,12 +3146,27 @@ namespace WinFormApp
                 if (GameUIPointedIndex != A)
                 {
                     Point LastPointedIndex = GameUIPointedIndex;
-
                     GameUIPointedIndex = A;
 
                     ElementArray_PresentAt(LastPointedIndex);
                     ElementArray_PresentAt(GameUIPointedIndex);
                 }
+            }
+        }
+
+        private void Panel_Environment_MouseLeave(object sender, EventArgs e)
+        {
+            //
+            // 鼠标离开 Panel_Environment。
+            //
+
+            if (Timer_Timer.Enabled)
+            {
+                Point LastPointedIndex = GameUIPointedIndex;
+                GameUIPointedIndex = new Point(-1, -1);
+
+                ElementArray_PresentAt(LastPointedIndex);
+                ElementArray_PresentAt(GameUIPointedIndex);
             }
         }
 

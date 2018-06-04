@@ -1025,6 +1025,7 @@
             this.Panel_Environment.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Panel_Environment_KeyDown);
             this.Panel_Environment.Paint += new System.Windows.Forms.PaintEventHandler(this.Panel_Environment_Paint);
             this.Panel_Environment.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Panel_Environment_MouseDown);
+            this.Panel_Environment.MouseLeave += new System.EventHandler(this.Panel_Environment_MouseLeave);
             this.Panel_Environment.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Panel_Environment_MouseMove);
             this.Panel_Environment.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.Panel_Environment_MouseWheel);
             // 
