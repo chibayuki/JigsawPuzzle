@@ -1384,9 +1384,7 @@ namespace WinFormApp
 
         #region 数组功能
 
-        // 拷贝。
-
-        private Int32[,] GetCopyOfArray(Int32[,] Array)
+        private static Int32[,] GetCopyOfArray(Int32[,] Array)
         {
             //
             // 返回二维矩阵的浅表副本。Array：矩阵。
@@ -1407,9 +1405,7 @@ namespace WinFormApp
             }
         }
 
-        // 冗余量。
-
-        private Int32 GetZeroCountOfArray(Int32[,] Array, Size Cap)
+        private static Int32 GetZeroCountOfArray(Int32[,] Array, Size Cap)
         {
             //
             // 计算二维矩阵值为 0 的元素的数量。Array：矩阵，索引为 [x, y]；Cap：矩阵的大小，分量 (Width, Height) 分别表示沿 x 方向和沿 y 方向的元素数量。
@@ -1443,9 +1439,7 @@ namespace WinFormApp
             }
         }
 
-        // 统计。
-
-        private List<Point> GetCertainIndexListOfArray(Int32[,] Array, Size Cap, Int32 Value)
+        private static List<Point> GetCertainIndexListOfArray(Int32[,] Array, Size Cap, Int32 Value)
         {
             //
             // 返回二维矩阵中所有值为指定值的元素的索引的列表。Array：矩阵，索引为 [x, y]；Cap：矩阵的大小，分量 (Width, Height) 分别表示沿 x 方向和沿 y 方向的元素数量；Value：指定值。
@@ -2917,6 +2911,8 @@ namespace WinFormApp
 
                         //
 
+                        TimerStop();
+
                         if (!GameIsWin)
                         {
                             if (ThisRecord.GameTime.TotalMilliseconds > 0 && ThisRecord.StepCount > 0)
@@ -2940,16 +2936,12 @@ namespace WinFormApp
 
                         //
 
-                        Panel_Environment.Focus();
-
-                        //
+                        TimerStop();
 
                         if (!GameIsWin && (ThisRecord.GameTime.TotalMilliseconds > 0 && ThisRecord.StepCount > 0))
                         {
                             SaveLastGame();
                         }
-
-                        ExitGameUI();
                     }
                     break;
             }
@@ -3124,8 +3116,6 @@ namespace WinFormApp
             GameUINow = false;
 
             //
-
-            TimerStop();
 
             Panel_FunctionArea.Visible = true;
             Panel_GameUI.Visible = false;
