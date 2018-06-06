@@ -2,7 +2,7 @@
 Copyright © 2013-2018 chibayuki@foxmail.com
 
 拼图板
-Version 7.1.17000.4925.R16.180605-0000
+Version 7.1.17000.4925.R16.180606-0000
 
 This file is part of 拼图板
 
@@ -40,7 +40,7 @@ namespace WinFormApp
         private static readonly Int32 BuildNumber = new Version(Application.ProductVersion).Build; // 版本号。
         private static readonly Int32 BuildRevision = new Version(Application.ProductVersion).Revision; // 修订版本。
         private static readonly string LabString = "R16"; // 分支名。
-        private static readonly string BuildTime = "180605-0000"; // 编译时间。
+        private static readonly string BuildTime = "180606-0000"; // 编译时间。
 
         //
 
@@ -180,7 +180,7 @@ namespace WinFormApp
 
         private Int32[,] ElementArray_Last = new Int32[CAPACITY, CAPACITY]; // 上次游戏的元素矩阵。
 
-        private List<Point> ElementIndexList_Last = new List<Point>(0); // 上次游戏的元素索引列表。
+        private List<Point> ElementIndexList_Last = new List<Point>(CAPACITY * CAPACITY); // 上次游戏的元素索引列表。
 
         #endregion
 
@@ -777,7 +777,7 @@ namespace WinFormApp
                     if (OldVersionList.Count > 0)
                     {
                         List<Version> OldVersionList_Copy = new List<Version>(OldVersionList);
-                        List<Version> OldVersionList_Sorted = new List<Version>(0);
+                        List<Version> OldVersionList_Sorted = new List<Version>(OldVersionList_Copy.Count);
 
                         while (OldVersionList_Copy.Count > 0)
                         {
@@ -797,11 +797,13 @@ namespace WinFormApp
 
                         for (int i = 0; i < OldVersionList_Sorted.Count; i++)
                         {
-                            if (Directory.Exists(RootDir_Product + "\\" + OldVersionList_Sorted[i].Build + "." + OldVersionList_Sorted[i].Revision))
+                            string Dir = RootDir_Product + "\\" + OldVersionList_Sorted[i].Build + "." + OldVersionList_Sorted[i].Revision;
+
+                            if (Directory.Exists(Dir))
                             {
                                 try
                                 {
-                                    Com.IO.CopyFolder(RootDir_Product + "\\" + OldVersionList_Sorted[i].Build + "." + OldVersionList_Sorted[i].Revision, RootDir_CurrentVersion);
+                                    Com.IO.CopyFolder(Dir, RootDir_CurrentVersion);
 
                                     break;
                                 }
@@ -1390,7 +1392,19 @@ namespace WinFormApp
             // 返回二维矩阵的浅表副本。Array：矩阵。
             //
 
-            return (Int32[,])Array.Clone();
+            try
+            {
+                if (Array != null)
+                {
+                    return (Int32[,])Array.Clone();
+                }
+
+                return null;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         // 冗余量。
@@ -1403,20 +1417,25 @@ namespace WinFormApp
 
             try
             {
-                Int32 ZeroCount = 0;
-
-                for (int X = 0; X < Cap.Width; X++)
+                if (Array != null)
                 {
-                    for (int Y = 0; Y < Cap.Height; Y++)
+                    Int32 ZeroCount = 0;
+
+                    for (int X = 0; X < Cap.Width; X++)
                     {
-                        if (Array[X, Y] == 0)
+                        for (int Y = 0; Y < Cap.Height; Y++)
                         {
-                            ZeroCount++;
+                            if (Array[X, Y] == 0)
+                            {
+                                ZeroCount++;
+                            }
                         }
                     }
+
+                    return ZeroCount;
                 }
 
-                return ZeroCount;
+                return 0;
             }
             catch
             {
@@ -1432,26 +1451,31 @@ namespace WinFormApp
             // 返回二维矩阵中所有值为指定值的元素的索引的列表。Array：矩阵，索引为 [x, y]；Cap：矩阵的大小，分量 (Width, Height) 分别表示沿 x 方向和沿 y 方向的元素数量；Value：指定值。
             //
 
-            List<Point> L = new List<Point>(0);
-
             try
             {
-                for (int X = 0; X < Cap.Width; X++)
+                if (Array != null)
                 {
-                    for (int Y = 0; Y < Cap.Height; Y++)
+                    List<Point> L = new List<Point>(Cap.Width * Cap.Height);
+
+                    for (int X = 0; X < Cap.Width; X++)
                     {
-                        if (Array[X, Y] == Value)
+                        for (int Y = 0; Y < Cap.Height; Y++)
                         {
-                            L.Add(new Point(X, Y));
+                            if (Array[X, Y] == Value)
+                            {
+                                L.Add(new Point(X, Y));
+                            }
                         }
                     }
+
+                    return L;
                 }
 
-                return L;
+                return new List<Point>(0);
             }
             catch
             {
-                return L;
+                return new List<Point>(0);
             }
         }
 
@@ -2351,13 +2375,12 @@ namespace WinFormApp
             if (GetZeroCountOfArray(ElementArray, Range) == 1)
             {
                 double N = 0.368299958486299 * Math.Pow(Range.Width + Range.Height, 2.69505569810127); // 此多项式基于大量统计数据的 Excel 拟合，其含义为打乱一个布局的宽度与高度之和为特定常数的拼图板所需步数的数学期望。
-                int n = 0;
 
-                while (CorrectTileCount > 0 || n < 2 * N) // 用于确保打乱后的拼图板具有较高的混乱程度。
+                for (int i = 0; CorrectTileCount > 0 || i < 2 * N; i++) // 用于确保打乱后的拼图板具有较高的混乱程度。
                 {
                     Point Az = GetCertainIndexListOfArray(ElementArray, Range, 0)[0];
 
-                    List<Point> L_Ax = new List<Point>(0);
+                    List<Point> L_Ax = new List<Point>(Range.Width + Range.Height - 1);
 
                     for (int X = 0; X < Range.Width; X++)
                     {
@@ -2376,8 +2399,6 @@ namespace WinFormApp
                     }
 
                     _ElementArray_LogicalMove(L_Ax[Com.Statistics.RandomInteger(L_Ax.Count)], Az);
-
-                    n++;
                 }
             }
         }
