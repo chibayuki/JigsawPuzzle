@@ -2,7 +2,7 @@
 Copyright © 2013-2018 chibayuki@foxmail.com
 
 拼图板
-Version 7.1.17000.4925.R16.180606-0000
+Version 7.1.17000.4925.R16.180609-0000
 
 This file is part of 拼图板
 
@@ -40,7 +40,7 @@ namespace WinFormApp
         private static readonly Int32 BuildNumber = new Version(Application.ProductVersion).Build; // 版本号。
         private static readonly Int32 BuildRevision = new Version(Application.ProductVersion).Revision; // 修订版本。
         private static readonly string LabString = "R16"; // 分支名。
-        private static readonly string BuildTime = "180606-0000"; // 编译时间。
+        private static readonly string BuildTime = "180609-0000"; // 编译时间。
 
         //
 
@@ -599,6 +599,14 @@ namespace WinFormApp
 
             Com.WinForm.ControlSubstitution.LabelAsButton(Label_GitHub_Base, Label_GitHub_Base_Click, Color.Transparent, Me.RecommendColors.Button_DEC.ToColor(), Me.RecommendColors.Button_INC.ToColor(), new Font("微软雅黑", 9.75F, FontStyle.Underline, GraphicsUnit.Point, 134), new Font("微软雅黑", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 134), new Font("微软雅黑", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 134));
             Com.WinForm.ControlSubstitution.LabelAsButton(Label_GitHub_Release, Label_GitHub_Release_Click, Color.Transparent, Me.RecommendColors.Button_DEC.ToColor(), Me.RecommendColors.Button_INC.ToColor(), new Font("微软雅黑", 9.75F, FontStyle.Underline, GraphicsUnit.Point, 134), new Font("微软雅黑", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 134), new Font("微软雅黑", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 134));
+
+            // 中断按钮图像
+
+            InterruptImages.Update(Me.RecommendColors.Text.ToColor());
+
+            PictureBox_Interrupt.Image = (Timer_Timer.Enabled ? InterruptImages.Pause : InterruptImages.Resume);
+            PictureBox_Restart.Image = InterruptImages.Restart;
+            PictureBox_ExitGame.Image = InterruptImages.ExitGame;
         }
 
         #endregion
@@ -2749,7 +2757,7 @@ namespace WinFormApp
 
         // 中断。
 
-        private enum InterruptActions { NULL = -1, StartNew, Continue, Pause, Resume, Restart, Exit, CloseApp, COUNT } // 中断动作枚举。
+        private enum InterruptActions { NULL = -1, StartNew, Continue, Pause, Resume, Restart, ExitGame, CloseApp, COUNT } // 中断动作枚举。
 
         private void Interrupt(InterruptActions IA)
         {
@@ -2841,7 +2849,7 @@ namespace WinFormApp
 
                         RepaintCurBmp();
 
-                        PictureBox_Interrupt.Image = Properties.Resources.Resume;
+                        PictureBox_Interrupt.Image = InterruptImages.Resume;
                     }
                     break;
 
@@ -2853,7 +2861,7 @@ namespace WinFormApp
 
                         Judgement();
 
-                        PictureBox_Interrupt.Image = Properties.Resources.Pause;
+                        PictureBox_Interrupt.Image = InterruptImages.Pause;
                     }
                     break;
 
@@ -2889,7 +2897,7 @@ namespace WinFormApp
                         ElementArray_RepresentAll();
 
                         PictureBox_Interrupt.Enabled = true;
-                        PictureBox_Interrupt.Image = Properties.Resources.Pause;
+                        PictureBox_Interrupt.Image = InterruptImages.Pause;
 
                         Judgement();
 
@@ -2899,7 +2907,7 @@ namespace WinFormApp
                     }
                     break;
 
-                case InterruptActions.Exit: // 退出游戏。
+                case InterruptActions.ExitGame: // 退出游戏。
                     {
                         ThisRecord.Range = Range;
 
@@ -2949,6 +2957,73 @@ namespace WinFormApp
 
         // 中断按钮。
 
+        private static class InterruptImages // 包含表示中断的图像的静态类。
+        {
+            private static readonly Size _Size = new Size(25, 25);
+
+            private static Bitmap _Pause = null;
+            private static Bitmap _Resume = null;
+            private static Bitmap _Restart = null;
+            private static Bitmap _ExitGame = null;
+
+            //
+
+            public static Bitmap Pause => _Pause; // 暂停。
+            public static Bitmap Resume => _Resume; // 恢复。
+            public static Bitmap Restart => _Restart; // 重新开始。
+            public static Bitmap ExitGame => _ExitGame; // 退出游戏。
+
+            //
+
+            public static void Update(Color color) // 使用指定的颜色更新所有图像。
+            {
+                _Pause = new Bitmap(_Size.Width, _Size.Height);
+
+                using (Graphics Grap = Graphics.FromImage(_Pause))
+                {
+                    Grap.SmoothingMode = SmoothingMode.AntiAlias;
+
+                    Grap.DrawLine(new Pen(color, 2F), new Point(9, 6), new Point(9, 18));
+                    Grap.DrawLine(new Pen(color, 2F), new Point(16, 6), new Point(16, 18));
+                }
+
+                //
+
+                _Resume = new Bitmap(_Size.Width, _Size.Height);
+
+                using (Graphics Grap = Graphics.FromImage(_Resume))
+                {
+                    Grap.SmoothingMode = SmoothingMode.AntiAlias;
+
+                    Grap.DrawPolygon(new Pen(color, 2F), new Point[] { new Point(9, 6), new Point(16, 12), new Point(9, 18) });
+                }
+
+                //
+
+                _Restart = new Bitmap(_Size.Width, _Size.Height);
+
+                using (Graphics Grap = Graphics.FromImage(_Restart))
+                {
+                    Grap.SmoothingMode = SmoothingMode.AntiAlias;
+
+                    Grap.DrawArc(new Pen(color, 2F), new Rectangle(new Point(6, 6), new Size(12, 12)), -150F, 300F);
+                    Grap.DrawLines(new Pen(color, 2F), new Point[] { new Point(6, 6), new Point(6, 10), new Point(10, 10) });
+                }
+
+                //
+
+                _ExitGame = new Bitmap(_Size.Width, _Size.Height);
+
+                using (Graphics Grap = Graphics.FromImage(_ExitGame))
+                {
+                    Grap.SmoothingMode = SmoothingMode.AntiAlias;
+
+                    Grap.DrawLine(new Pen(color, 2F), new Point(6, 6), new Point(20, 20));
+                    Grap.DrawLine(new Pen(color, 2F), new Point(20, 6), new Point(6, 20));
+                }
+            }
+        }
+
         private void Label_StartNewGame_Click(object sender, EventArgs e)
         {
             //
@@ -2977,14 +3052,7 @@ namespace WinFormApp
 
             if (!GameIsWin)
             {
-                if (Timer_Timer.Enabled)
-                {
-                    ToolTip_InterruptPrompt.SetToolTip(PictureBox_Interrupt, "暂停");
-                }
-                else
-                {
-                    ToolTip_InterruptPrompt.SetToolTip(PictureBox_Interrupt, "恢复");
-                }
+                ToolTip_InterruptPrompt.SetToolTip(PictureBox_Interrupt, (Timer_Timer.Enabled ? "暂停" : "恢复"));
             }
         }
 
@@ -3044,7 +3112,7 @@ namespace WinFormApp
             // 单击 PictureBox_ExitGame。
             //
 
-            Interrupt(InterruptActions.Exit);
+            Interrupt(InterruptActions.ExitGame);
         }
 
         #endregion
@@ -3074,7 +3142,7 @@ namespace WinFormApp
             ThisRecord = new Record();
 
             PictureBox_Interrupt.Enabled = true;
-            PictureBox_Interrupt.Image = Properties.Resources.Pause;
+            PictureBox_Interrupt.Image = InterruptImages.Pause;
 
             //
 
@@ -3228,7 +3296,7 @@ namespace WinFormApp
             {
                 case Keys.Home: Interrupt(InterruptActions.Restart); break;
                 case Keys.End:
-                case Keys.Escape: Interrupt(InterruptActions.Exit); break;
+                case Keys.Escape: Interrupt(InterruptActions.ExitGame); break;
             }
         }
 

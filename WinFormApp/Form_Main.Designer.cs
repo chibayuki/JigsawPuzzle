@@ -980,7 +980,6 @@
             // 
             this.PictureBox_Interrupt.BackColor = System.Drawing.Color.Transparent;
             this.PictureBox_Interrupt.ErrorImage = null;
-            this.PictureBox_Interrupt.Image = global::WinFormApp.Properties.Resources.Pause;
             this.PictureBox_Interrupt.InitialImage = null;
             this.PictureBox_Interrupt.Location = new System.Drawing.Point(0, 0);
             this.PictureBox_Interrupt.Name = "PictureBox_Interrupt";
@@ -993,7 +992,6 @@
             // 
             this.PictureBox_Restart.BackColor = System.Drawing.Color.Transparent;
             this.PictureBox_Restart.ErrorImage = null;
-            this.PictureBox_Restart.Image = ((System.Drawing.Image)(resources.GetObject("PictureBox_Restart.Image")));
             this.PictureBox_Restart.InitialImage = null;
             this.PictureBox_Restart.Location = new System.Drawing.Point(50, 0);
             this.PictureBox_Restart.Name = "PictureBox_Restart";
@@ -1006,7 +1004,6 @@
             // 
             this.PictureBox_ExitGame.BackColor = System.Drawing.Color.Transparent;
             this.PictureBox_ExitGame.ErrorImage = null;
-            this.PictureBox_ExitGame.Image = ((System.Drawing.Image)(resources.GetObject("PictureBox_ExitGame.Image")));
             this.PictureBox_ExitGame.InitialImage = null;
             this.PictureBox_ExitGame.Location = new System.Drawing.Point(100, 0);
             this.PictureBox_ExitGame.Name = "PictureBox_ExitGame";

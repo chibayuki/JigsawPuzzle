@@ -97,8 +97,6 @@
     <Content Include="AppLogo_48.ico" />
     <Content Include="LicenseInfo\GPLv3.txt" />
     <Content Include="LicenseInfo\License.txt" />
-    <Content Include="Resources\Pause.png" />
-    <Content Include="Resources\Resume.png" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
