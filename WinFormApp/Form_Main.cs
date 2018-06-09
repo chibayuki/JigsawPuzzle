@@ -2890,9 +2890,9 @@ namespace WinFormApp
 
                         RepaintCurBmp();
 
-                        ElementArray_AnimatePresentAt(ElementIndexList, true);
-
                         TimerStart();
+
+                        ElementArray_AnimatePresentAt(ElementIndexList, true);
 
                         ElementArray_RepresentAll();
 
