@@ -2,7 +2,7 @@
 Copyright © 2013-2018 chibayuki@foxmail.com
 
 拼图板
-Version 7.1.17000.4925.R16.180611-0000
+Version 7.1.17000.4925.R16.180617-0000
 
 This file is part of 拼图板
 
@@ -40,7 +40,7 @@ namespace WinFormApp
         private static readonly Int32 BuildNumber = new Version(Application.ProductVersion).Build; // 版本号。
         private static readonly Int32 BuildRevision = new Version(Application.ProductVersion).Revision; // 修订版本。
         private static readonly string LabString = "R16"; // 分支名。
-        private static readonly string BuildTime = "180611-0000"; // 编译时间。
+        private static readonly string BuildTime = "180617-0000"; // 编译时间。
 
         //
 
@@ -811,7 +811,7 @@ namespace WinFormApp
                             {
                                 try
                                 {
-                                    Com.IO.CopyFolder(Dir, RootDir_CurrentVersion);
+                                    Com.IO.CopyFolder(Dir, RootDir_CurrentVersion, true, true, true);
 
                                     break;
                                 }
@@ -839,7 +839,19 @@ namespace WinFormApp
                 {
                     foreach (var V in OldVersionList)
                     {
-                        Com.IO.DeleteFolder(RootDir_Product + "\\" + V.Build + "." + V.Revision);
+                        string Dir = RootDir_Product + "\\" + V.Build + "." + V.Revision;
+
+                        if (Directory.Exists(Dir))
+                        {
+                            try
+                            {
+                                Directory.Delete(Dir, true);
+                            }
+                            catch
+                            {
+                                continue;
+                            }
+                        }
                     }
                 }
             }
@@ -1091,7 +1103,7 @@ namespace WinFormApp
                     {
                         string SubStr = Com.Text.GetIntervalString(Str, "<BestRecord>", "</BestRecord>", false, false);
 
-                        while (SubStr.IndexOf("(") != -1 && SubStr.IndexOf(")") != -1)
+                        while (SubStr.Contains("(") && SubStr.Contains(")"))
                         {
                             try
                             {
@@ -1236,7 +1248,7 @@ namespace WinFormApp
                     {
                         string SubStr = Com.Text.GetIntervalString(Str, "<Element>", "</Element>", false, false);
 
-                        while (SubStr.IndexOf("(") != -1 && SubStr.IndexOf(")") != -1)
+                        while (SubStr.Contains("(") && SubStr.Contains(")"))
                         {
                             try
                             {
