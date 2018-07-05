@@ -2840,6 +2840,11 @@ namespace WinFormApp
 
                         //
 
+                        if (BlockStyle == BlockStyles.Image && !CheckBkgImg())
+                        {
+                            BlockStyle = BlockStyles.Number;
+                        }
+
                         if (BlockStyle == BlockStyles.Image && SubImgAry_EffCap != Range)
                         {
                             ResetSubImgAry();
@@ -2867,6 +2872,11 @@ namespace WinFormApp
                         Range = Record_Last.Range;
 
                         //
+
+                        if (BlockStyle == BlockStyles.Image && !CheckBkgImg())
+                        {
+                            BlockStyle = BlockStyles.Number;
+                        }
 
                         if (BlockStyle == BlockStyles.Image && SubImgAry_EffCap != Range)
                         {
