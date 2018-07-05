@@ -2840,14 +2840,19 @@ namespace WinFormApp
 
                         //
 
-                        if (BlockStyle == BlockStyles.Image && !CheckBkgImg())
+                        if (BlockStyle == BlockStyles.Image)
                         {
-                            BlockStyle = BlockStyles.Number;
-                        }
-
-                        if (BlockStyle == BlockStyles.Image && SubImgAry_EffCap != Range)
-                        {
-                            ResetSubImgAry();
+                            if (CheckBkgImg())
+                            {
+                                if (SubImgAry_EffCap != Range)
+                                {
+                                    ResetSubImgAry();
+                                }
+                            }
+                            else
+                            {
+                                BlockStyle = BlockStyles.Number;
+                            }
                         }
 
                         //
@@ -2873,14 +2878,19 @@ namespace WinFormApp
 
                         //
 
-                        if (BlockStyle == BlockStyles.Image && !CheckBkgImg())
+                        if (BlockStyle == BlockStyles.Image)
                         {
-                            BlockStyle = BlockStyles.Number;
-                        }
-
-                        if (BlockStyle == BlockStyles.Image && SubImgAry_EffCap != Range)
-                        {
-                            ResetSubImgAry();
+                            if (CheckBkgImg())
+                            {
+                                if (SubImgAry_EffCap != Range)
+                                {
+                                    ResetSubImgAry();
+                                }
+                            }
+                            else
+                            {
+                                BlockStyle = BlockStyles.Number;
+                            }
                         }
 
                         //
