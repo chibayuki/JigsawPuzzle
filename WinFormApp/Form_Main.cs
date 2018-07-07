@@ -1,12 +1,12 @@
 ﻿/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-Copyright © 2013-2018 chibayuki@foxmail.com
+Copyright © 2018 chibayuki@foxmail.com
 
-拼图板
-Version 7.1.17000.4925.R16.180618-0000
+拼图板 (JigsawPuzzle)
+Version 7.1.17000.6250.R16.180707-1700
 
-This file is part of 拼图板
+This file is part of "拼图板" (JigsawPuzzle)
 
-拼图板 is released under the GPLv3 license
+"拼图板" (JigsawPuzzle) is released under the GPLv3 license
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 using System;
@@ -40,7 +40,7 @@ namespace WinFormApp
         private static readonly Int32 BuildNumber = new Version(Application.ProductVersion).Build; // 版本号。
         private static readonly Int32 BuildRevision = new Version(Application.ProductVersion).Revision; // 修订版本。
         private static readonly string LabString = "R16"; // 分支名。
-        private static readonly string BuildTime = "180618-0000"; // 编译时间。
+        private static readonly string BuildTime = "180707-1700"; // 编译时间。
 
         //
 
@@ -73,8 +73,8 @@ namespace WinFormApp
             new Version(7, 1, 17000, 4464),
             new Version(7, 1, 17000, 4651),
             new Version(7, 1, 17000, 4729),
-            new Version(7, 1, 17000, 4807),/*
-            new Version(7, 1, 17000, 4925)*/
+            new Version(7, 1, 17000, 4807),
+            new Version(7, 1, 17000, 4925)
         };
 
         //
@@ -4061,7 +4061,7 @@ namespace WinFormApp
                 BlockStyle = BlockStyles.Number;
             }
 
-            _ResetBlockStyleControl();
+            ResetBlockStyleControlForImage();
         }
 
         private void RadioButton_Image_CheckedChanged(object sender, EventArgs e)
@@ -4075,7 +4075,7 @@ namespace WinFormApp
                 BlockStyle = BlockStyles.Image;
             }
 
-            _ResetBlockStyleControl();
+            ResetBlockStyleControlForImage();
         }
 
         private void CheckBox_ShowNumberOnImage_CheckedChanged(object sender, EventArgs e)
@@ -4087,10 +4087,10 @@ namespace WinFormApp
             ShowNumberOnImage = CheckBox_ShowNumberOnImage.Checked;
         }
 
-        private void _ResetBlockStyleControl()
+        private void ResetBlockStyleControlForImage()
         {
             //
-            // 重置样式控件。
+            // 重置图片选项中的样式控件。
             //
 
             CheckBox_ShowNumberOnImage.CheckedChanged -= CheckBox_ShowNumberOnImage_CheckedChanged;
@@ -4124,7 +4124,7 @@ namespace WinFormApp
             RadioButton_Number.CheckedChanged += RadioButton_Number_CheckedChanged;
             RadioButton_Image.CheckedChanged += RadioButton_Image_CheckedChanged;
 
-            _ResetBlockStyleControl();
+            ResetBlockStyleControlForImage();
         }
 
         private void Label_SelectBkgImg_MouseEnter(object sender, EventArgs e)
