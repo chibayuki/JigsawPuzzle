@@ -1,8 +1,8 @@
 ﻿/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-Copyright © 2018 chibayuki@foxmail.com
+Copyright © 2019 chibayuki@foxmail.com
 
 拼图板 (JigsawPuzzle)
-Version 7.1.17000.6277.R18.190405-0000
+Version 7.1.17000.6296.R18.190525-1400
 
 This file is part of "拼图板" (JigsawPuzzle)
 
@@ -40,7 +40,7 @@ namespace WinFormApp
         private static readonly Int32 BuildNumber = new Version(Application.ProductVersion).Build; // 版本号。
         private static readonly Int32 BuildRevision = new Version(Application.ProductVersion).Revision; // 修订版本。
         private static readonly string LabString = "R18"; // 分支名。
-        private static readonly string BuildTime = "190405-0000"; // 编译时间。
+        private static readonly string BuildTime = "190525-1400"; // 编译时间。
 
         //
 
@@ -75,8 +75,8 @@ namespace WinFormApp
             new Version(7, 1, 17000, 4729),
             new Version(7, 1, 17000, 4807),
             new Version(7, 1, 17000, 4925),
-            new Version(7, 1, 17000, 6250),/*
-            new Version(7, 1, 17000, 6277)*/
+            new Version(7, 1, 17000, 6250),
+            new Version(7, 1, 17000, 6277)
         };
 
         //
